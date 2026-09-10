@@ -28,7 +28,7 @@ def fetch_series(code):
 # ---------------- HEADER ----------------
 st.title("🇧 Bangladesh Macro-Financial Monitor")
 st.caption("Live macroeconomic intelligence for retail investors & research • "
-           "Data: World Bank Open Data API • Built by [Your Name], Research Analyst @ Investaloy")
+           "Data: World Bank Open Data API • Built by Md. Raiyan Ahmed, Research Analyst @ Investaloy")
 
 # ---------------- KPI CARDS ----------------
 cols = st.columns(3)
