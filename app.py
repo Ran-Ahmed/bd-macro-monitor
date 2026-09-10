@@ -3,7 +3,7 @@ import pandas as pd
 import plotly.graph_objects as go
 import requests
 
-st.set_page_config(page_title="Bangladesh Macro-Financial Monitor", layout="wide", page_icon="🇧")
+st.set_page_config(page_title="Bangladesh Macro-Financial Monitor", layout="wide", page_icon="🇧🇩")
 
 # ---------------- CONFIGURATION ----------------
 INDICATORS = {
@@ -15,14 +15,11 @@ INDICATORS = {
     "BN.CAB.XOKA.GD.ZS":    ("Current Account Balance", "% of GDP"),
 }
 
-COLOR = {"Undervalued": "#006a4e", "Fair": "#f2a516", "Overvalued": "#f42a41"}
-
 SAMPLE_WATCHLIST = pd.DataFrame({
     "Bank": ["BRAC Bank", "City Bank", "Dutch-Bangla Bank", "Eastern Bank", "Islami Bank BD", "Pubali Bank"],
     "Price (BDT)": [58.4, 24.1, 72.5, 38.2, 45.6, 33.9],
     "P/E Ratio": [7.8, 5.2, 6.1, 5.9, 8.4, 6.6],
     "Dividend Yield (%)": [3.4, 5.1, 4.2, 4.8, 2.9, 3.7],
-    "Analyst View": ["Undervalued", "Undervalued", "Fair", "Undervalued", "Fair", "Fair"],
 })
 
 @st.cache_data(ttl=86400)
@@ -52,7 +49,7 @@ for code, (name, unit) in INDICATORS.items():
         data[code] = df
 
 # ---------------- HEADER ----------------
-st.title("🇧 Bangladesh Macro-Financial Monitor")
+st.title("🇧🇩 Bangladesh Macro-Financial Monitor")
 st.caption("Live macroeconomic intelligence for retail investors & research • "
            "Data: World Bank Open Data API • Built by Md. Raiyan Ahmed, Research Analyst @ Investaloy")
 
@@ -93,6 +90,7 @@ with tab_macro:
 with tab_dse:
     st.subheader("DSE Bank Watchlist")
     st.caption("Compare valuation metrics of listed banks. Upload your own research CSV, or use the template.")
+    st.caption("⚠️ Disclaimer: Metrics are for educational and research purposes only, not financial advice.")
 
     csv_bytes = SAMPLE_WATCHLIST.to_csv(index=False).encode("utf-8")
     st.download_button("⬇️ Download CSV template", data=csv_bytes,
@@ -103,7 +101,7 @@ with tab_dse:
     if uploaded is not None:
         try:
             df_try = pd.read_csv(uploaded)
-            required = {"Bank", "Price (BDT)", "P/E Ratio", "Dividend Yield (%)", "Analyst View"}
+            required = {"Bank", "Price (BDT)", "P/E Ratio", "Dividend Yield (%)"}
             if required.issubset(df_try.columns):
                 df_watch = df_try
             else:
@@ -111,19 +109,19 @@ with tab_dse:
         except Exception:
             st.error("Could not read that CSV. Showing sample data instead.")
     else:
-        st.caption("⚠️ Showing SAMPLE data for layout demo. Prices are placeholders, not investment advice.")
+        st.caption("ℹ️ Showing SAMPLE data for layout demo. Prices are placeholders.")
 
     t1, t2 = st.columns(2)
     with t1:
         fig_pe = go.Figure(go.Bar(
             x=df_watch["Bank"], y=df_watch["P/E Ratio"],
-            marker_color=[COLOR.get(v, "#888888") for v in df_watch["Analyst View"]]))
+            marker_color="#006a4e"))
         fig_pe.update_layout(title="P/E Ratio by Bank", template="plotly_white", height=360)
         st.plotly_chart(fig_pe, use_container_width=True)
     with t2:
         fig_dy = go.Figure(go.Bar(
             x=df_watch["Bank"], y=df_watch["Dividend Yield (%)"],
-            marker_color=[COLOR.get(v, "#888888") for v in df_watch["Analyst View"]]))
+            marker_color="#006a4e"))
         fig_dy.update_layout(title="Dividend Yield (%) by Bank", template="plotly_white", height=360)
         st.plotly_chart(fig_dy, use_container_width=True)
 
@@ -142,7 +140,7 @@ with tab_research:
     c2.link_button("🐙 GitHub", "https://github.com/Ran-Ahmed")
     c3, c4 = st.columns(2)
     c3.link_button("📈 Investaloy", "https://www.investaloy.com/")
-    c4.link_button("🌐 Millennium Fellowship", "https://www.millenniumfellows.org/")
+    c4.link_button("🌐 Millennium Fellowship", "https://www.millenniumfellows.org/fellow/2025/ud/md.-raiyan-ahmed")
 
     st.subheader("📄 Published Research")
     st.info("Coming soon: 'Valuation Analysis of Bangladeshi Listed Banks' — equity research note by Md. Raiyan Ahmed.")
